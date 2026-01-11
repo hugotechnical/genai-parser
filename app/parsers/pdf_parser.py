@@ -12,7 +12,7 @@ from PIL import Image, ImageEnhance, ImageOps, ImageFilter  # Added ImageFilter
 from app.config import settings
 from app.models import ParsedResult
 from app.parsers.base_parser import BaseParser
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 
 # =========================
 # CONFIG CONSTANTS
@@ -30,7 +30,7 @@ PAGE_BREAK_STR = settings.page_break_str
 
 class PDFParser(BaseParser):
     def __init__(self):
-        self.logger = get_logger(__name__)
+        self.logger = setup_logger(__name__)
         if os.path.exists("/usr/bin/tesseract"):
             pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 

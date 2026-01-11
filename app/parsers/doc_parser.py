@@ -12,13 +12,13 @@ from typing import List, Tuple
 from zipfile import ZipFile
 import xml.etree.ElementTree as ET
 from app.parsers.base_parser import BaseParser
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 from app.models import ParsedResult
 
 
 class DocParser(BaseParser):
     def __init__(self):
-        self.logger = get_logger(__name__)
+        self.logger = setup_logger(__name__)
 
     def _convert_doc_to_docx(self, doc_path: Path) -> Path:
         """Convert file .doc sang .docx bằng LibreOffice (CLI)."""

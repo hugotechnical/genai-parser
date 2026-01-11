@@ -1,11 +1,11 @@
 import asyncio
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 
 from app.config import settings
 
-logger = get_logger(__name__)
+logger = setup_logger(__name__)
 
 API_TIMEOUT = settings.timeout or 300
 

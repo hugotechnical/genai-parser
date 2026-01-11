@@ -13,12 +13,12 @@ from app.services.parser_factory import ParserFactory
 from app.services.file_service import save_upload_to_temp
 from app.models import FileResponse
 from app.config import settings
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 from app.utils.pdf_utils import decide_should_ocr_file
 
 
 router = APIRouter()
-logger = get_logger(__name__)
+logger = setup_logger(__name__)
 
 # --- CONFIGURATION ---
 

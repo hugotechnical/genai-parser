@@ -1,11 +1,11 @@
 from app.parsers.base_parser import BaseParser
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 from app.models import ParsedResult
 
 
 class MdParser(BaseParser):
     def __init__(self):
-        self.logger = get_logger(__name__)
+        self.logger = setup_logger(__name__)
 
     def parse(self, file_path: str) -> ParsedResult:
         """Phân tích file Markdown và trích xuất toàn bộ nội dung."""

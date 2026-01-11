@@ -1,12 +1,12 @@
 from pptx import Presentation
 from app.parsers.base_parser import BaseParser
 from app.utils.markdown_utils import to_markdown
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 from app.models import ParsedResult
 
 class PPTParser(BaseParser):
     def __init__(self):
-        self.logger = get_logger(__name__)
+        self.logger = setup_logger(__name__)
 
     def _extract_slide_text(self, slide, slide_index: int) -> str:
         """Trích xuất toàn bộ text trong 1 slide."""

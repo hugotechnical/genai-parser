@@ -3,14 +3,14 @@ import re
 import numpy as np
 from pathlib import Path
 from app.parsers.base_parser import BaseParser
-from app.utils import get_logger
+from app.utils.logger import setup_logger
 from app.utils.markdown_utils import to_markdown
 from app.models import ParsedResult
 
 
 class XLSXParser(BaseParser):
     def __init__(self):
-        self.logger = get_logger(__name__)
+        self.logger = setup_logger(__name__)
 
     def _parse_sheet(self, xls: pd.ExcelFile, sheet_name: str) -> str:
         """Đọc và chuyển 1 sheet thành markdown với xử lý tối ưu khoảng trắng."""
