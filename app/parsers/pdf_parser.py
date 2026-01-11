@@ -56,37 +56,29 @@ class PDFParser(BaseParser):
     # =====================================================
     # Thay thế hàm _enhance_image trong code của bạn bằng hàm này
     def _enhance_image(self, img: Image.Image) -> Image.Image:
-        """
-        Chiến thuật 'Thickening': 
-        Thay vì tăng tương phản (làm mất chữ nhạt), ta làm chữ đậm lên.
-        """
         try:
-            # 1. Convert Grayscale
+            # 1. Chuyển về ảnh xám
             img = img.convert('L')
 
-            # 2. PADDING (Bắt buộc)
+            # 2. Thêm lề trắng (Padding)
             img = ImageOps.expand(img, border=30, fill=255)
 
-            # 3. LÀM ĐẬM CHỮ (KEY FIX)
-            # MinFilter(3) trong ảnh nền trắng chữ đen sẽ lấy điểm đen nhất trong ô 3x3
-            # -> Tác dụng: Làm nét chữ dày thêm 1 pixel xung quanh.
-            # Giúp số 8 không bị đứt nét, số tài khoản mờ hiện rõ hơn.
-            
-            img = img.filter(ImageFilter.MinFilter(1))
-            
+            # 3. LÀM SẮC NÉT (Hero Step - Đã chứng minh hiệu quả nhất)
+            # Giúp biên dạng số rõ ràng mà không gây dính nét
             enhancer_sharp = ImageEnhance.Sharpness(img)
             img = enhancer_sharp.enhance(2.0)
 
-            # 4. Tăng tương phản nhẹ (Rất nhẹ thôi)
-            # Chỉ để nền trắng hơn chút, không được quá cao (>1.5) gây mất nét
-            enhancer = ImageEnhance.Contrast(img)
-            img = enhancer.enhance(1.2)
+            # 4. Tăng tương phản nhẹ (Lọc nền)
+            enhancer_con = ImageEnhance.Contrast(img)
+            img = enhancer_con.enhance(1.2)
+
+            # KHÔNG DÙNG MinFilter
+            # KHÔNG DÙNG Resize/Upscale
+            # KHÔNG DÙNG Brightness reduction
 
             return img
-        except Exception as e:
-            self.logger.warning(f"⚠️ Image enhancement failed: {e}")
+        except Exception:
             return img
-         
     # =====================================================
     # OCR WORKER
     # =====================================================

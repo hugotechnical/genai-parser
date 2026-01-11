@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     debug: bool = True
     upload_dir: str = "/tmp/uploads"
     rate_limit: str = "50/minute"
-    ocr_lang: str = "eng"
+    ocr_lang: str = "vie+eng+osd"
     log_level: str = "DEBUG"
     timeout: int = 300
     max_file_size: int = 10 * 1024 * 1024
