@@ -14,7 +14,7 @@ from app.services.file_service import save_upload_to_temp
 from app.models import FileResponse
 from app.config import settings
 from app.utils import get_logger
-from app.utils.pdf_utils import check_scanned_pdf
+from app.utils.pdf_utils import decide_should_ocr_file
 
 
 router = APIRouter()
@@ -51,6 +51,7 @@ def health_check(request: Request):
 async def upload_file(request: Request, file: UploadFile = File(...)):
     temp_path = None
     file_id = None
+    config = dict()
     start_time = time.time()
     try:
         logger.info("📤 Đã nhận file upload: filename=%s content_type=%s", file.filename, file.content_type)
@@ -79,15 +80,19 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
         # Logic chọn lane (Phân luồng)
         if file_ext in HEAVY_EXTENSIONS:
             if file_ext == "pdf":
-                if check_scanned_pdf(temp_path):
+                is_scan = decide_should_ocr_file(temp_path)["should_ocr_file"]
+                if is_scan:
                     target_semaphore = sem_heavy
                     lane_name = "HEAVY (OCR/PDF)"
+                    config["is_pdf_scan"] = True
                 else:
                     target_semaphore = sem_light
                     lane_name = "LIGHT (Text/Doc/PDF native)"
+                    config["is_pdf_scan"] = False
         else:
             target_semaphore = sem_light
             lane_name = "LIGHT (Text/Doc/PDF native)"
+            config["is_pdf_scan"] = False
 
         # 4. Fail-fast: Nếu lane đang quá tải, reject ngay để client không chờ
         if target_semaphore.locked():
@@ -108,7 +113,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
                 # Chạy blocking code trong ThreadPoolExecutor
                 # Dùng asyncio.wait_for để set timeout cứng, tránh treo vĩnh viễn
                 parsed_result = await asyncio.wait_for(
-                    loop.run_in_executor(executor, lambda: parser.parse(temp_path)),
+                    loop.run_in_executor(executor, lambda: parser.parse(temp_path, config)),
                     timeout=PARSE_TIMEOUT
                 )
                 
