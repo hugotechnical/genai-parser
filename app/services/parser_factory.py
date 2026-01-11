@@ -26,5 +26,3 @@ class ParserFactory:
         if not parser:
             raise ValueError(f"Unsupported file type: {ext}")
         return parser
-
-

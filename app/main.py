@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 from slowapi import Limiter
@@ -13,6 +14,14 @@ from app.config import settings
 
 
 app = FastAPI(title=settings.app_name, version=settings.version, debug=settings.debug)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Attach limiter middleware for proper request context
 limiter = Limiter(key_func=get_remote_address)

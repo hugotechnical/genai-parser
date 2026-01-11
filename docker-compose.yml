@@ -8,7 +8,7 @@ services:
     env_file:
       - .env  
     ports:
-      - "8088:8000"
+      - "8086:8000"
     volumes:
       - ./app:/app/app
       - ./logs:/app/logs
@@ -16,8 +16,9 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 8G
+          cpus: "2.0"
+          memory: 3.5G
         reservations:
-          cpus: '2.0'
-          memory: 4G
+          cpus: "1.0"
+          memory: 2.0G
+
